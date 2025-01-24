@@ -1,5 +1,6 @@
-const URI = 'mongodb+srv://bydefaultstatic:careerCompass@cluster0.gzj1k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const JwtSecret = 'secret';
-const B_PORT = 3300;
+require('dotenv').config();
 
-module.exports = { URI, JwtSecret, B_PORT };
+export const URI = process.env.MONGO_URI || 'mongodb://localhost:27017/defaultdb';
+export const JwtSecret = process.env.JWT_SECRET || 'secret';
+export const B_PORT = process.env.PORT || 3300;
+
