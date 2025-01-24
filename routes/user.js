@@ -11,7 +11,7 @@ dotenv.config();
 
 const JwtSecret = process.env.JWT_SECRET;
 const authRouter = express.Router();
-
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
 const tryCatch = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
@@ -96,6 +96,7 @@ authRouter.post('/', auth ,async(req,res) => {
   const userId= req.user_id;
   const user  = await User.findById(userId);
   if(user){
+    console.log(user,'authCheck');
   res.status(200).json({
     firstname:user.firstName,
     lastname:user.lastName,
