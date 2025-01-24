@@ -14,9 +14,8 @@ connectDB();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://your-production-domain.com']
-    : ['http://localhost:5176'],
+  origin: ['http://localhost:5176', 'https://your-frontend-domain.com'], // Replace with allowed origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
 app.use(express.json());
