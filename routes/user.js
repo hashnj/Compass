@@ -88,8 +88,8 @@ authRouter.post('/signup', tryCatch(async (req, res) => {
 
   res.cookie('token', token, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production', 
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
   });
 
   res.status(201).json({ message: 'User registered successfully',user: { firstname: user.firstName, lastname: user.lastName, email: user.email, role: user.role } });
