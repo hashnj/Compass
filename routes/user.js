@@ -85,8 +85,13 @@ authRouter.post('/signup', tryCatch(async (req, res) => {
   });
 
   const token = jwt.sign({ id: user._id.toString() }, JwtSecret);
-
+  console.log(token);
   res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', 
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+  });
+  res.cookie('id', user._id.toString(), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', 
     sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
@@ -119,7 +124,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 authRouter.post(
-  '/mentor', auth,
+  '/mentor', 
   upload.single('profilePicture'),
   [
     body('expertise').notEmpty().withMessage('Expertise is required.'),
@@ -138,7 +143,7 @@ authRouter.post(
       }
 
       const { expertise, educationalQualifications, jobTitle, experience, bio } = req.body;
-      const userId = req.user.id;
+      const userId = req.cookies.id;
 
       const user = await User.findById(userId);
       if (!user) {
