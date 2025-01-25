@@ -120,7 +120,6 @@ const upload = multer({ storage });
 
 authRouter.post(
   '/mentor',
-  auth,
   upload.single('profilePicture'),
   [
     body('expertise').notEmpty().withMessage('Expertise is required.'),
