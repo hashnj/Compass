@@ -124,7 +124,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 authRouter.post(
-  '/mentor', auth,
+  '/mentor', 
   upload.single('profilePicture'),
   [
     body('expertise').notEmpty().withMessage('Expertise is required.'),
@@ -146,7 +146,7 @@ authRouter.post(
       const userId = req.user.id;
       console.log(userId);
 
-      const user = await User.findById(userId);
+      const user = await User.findone({email:req.body.email});  
       if (!user) {
         return res.status(404).json({ message: 'User not found.' });
       }
