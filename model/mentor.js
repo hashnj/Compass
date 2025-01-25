@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 
 const mentorSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -10,6 +11,5 @@ const mentorSchema = new mongoose.Schema({
   profilePicture: { type: String }, // Store as base64 string
 });
 
-const Mentor = mongoose.model('Mentor', mentorSchema);
+export default mongoose.model('Mentor', mentorSchema);
 
-export default Mentor;
