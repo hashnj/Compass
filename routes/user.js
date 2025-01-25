@@ -124,7 +124,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 authRouter.post(
-  '/mentor', 
+  '/mentor', auth,
   upload.single('profilePicture'),
   [
     body('expertise').notEmpty().withMessage('Expertise is required.'),
@@ -143,7 +143,7 @@ authRouter.post(
       }
 
       const { expertise, educationalQualifications, jobTitle, experience, bio } = req.body;
-      const userId = req.cookies.id;
+      const userId = req.user.id;
       console.log(userId);
 
       const user = await User.findById(userId);
