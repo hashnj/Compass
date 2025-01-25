@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import auth from '../middlewares/auth.js';
+import multer from 'multer';
 
 dotenv.config();
 
