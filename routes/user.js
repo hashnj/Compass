@@ -124,9 +124,10 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 authRouter.post(
-  '/mentor', 
+  '/mentor',
   upload.single('profilePicture'),
   [
+    body('email').isEmail().withMessage('A valid email is required.'),
     body('expertise').notEmpty().withMessage('Expertise is required.'),
     body('educationalQualifications').notEmpty().withMessage('Educational qualifications are required.'),
     body('jobTitle').notEmpty().withMessage('Job title is required.'),
@@ -142,57 +143,40 @@ authRouter.post(
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { expertise, educationalQualifications, jobTitle, experience, bio } = req.body;
-      const userId = req.user.id;
-      console.log(userId);
+      const {
+        email,
+        expertise,
+        educationalQualifications,
+        jobTitle,
+        experience,
+        bio,
+      } = req.body;
 
-      const user = await User.findone({email:req.body.email});  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-      }
-
-      if (user.role !== 'mentor') {
-        return res.status(403).json({ message: 'Only mentors can create or update profiles.' });
-      }
-
+      // Check for profile picture and convert to base64 if available
       let profilePicture = null;
       if (req.file) {
         profilePicture = req.file.buffer.toString('base64');
       }
 
-      let mentor = await Mentor.findOne({ user: userId });
+      // Create the mentor entry directly
+      const mentor = await Mentor.create({
+        email,
+        expertise,
+        educationalQualifications,
+        jobTitle,
+        experience,
+        bio,
+        profilePicture,
+      });
 
-      if (mentor) {
-        mentor.expertise = expertise;
-        mentor.educationalQualifications = educationalQualifications;
-        mentor.jobTitle = jobTitle;
-        mentor.experience = experience;
-        mentor.bio = bio;
-        if (profilePicture) mentor.profilePicture = profilePicture;
-
-        await mentor.save();
-      } else {
-        mentor = await Mentor.create({
-          user: userId,
-          expertise,
-          educationalQualifications,
-          jobTitle,
-          experience,
-          bio,
-          profilePicture,
-        });
-
-        user.mentorProfile = mentor._id;
-        await user.save();
-      }
-
-      res.status(200).json({ message: 'Mentor profile updated successfully.', mentor });
+      res.status(200).json({ message: 'Mentor profile created successfully.', mentor });
     } catch (error) {
-      console.error('Error updating mentor profile:', error);
-      res.status(500).json({ message: 'Internal server error.' });
+      console.error('Error creating mentor profile:', error);
+      res.status(500).json({ message: 'Internal server error.', error });
     }
   }
 );
+
 
 
 
