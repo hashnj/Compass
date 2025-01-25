@@ -10,6 +10,6 @@ const mentorSchema = new mongoose.Schema({
   profilePicture: { type: String }, // Store as base64 string
 });
 
-export default const Mentor = mongoose.model('Mentor', mentorSchema);
+const Mentor = mongoose.model('Mentor', mentorSchema);
 
-
+export default Mentor;
