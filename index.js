@@ -14,7 +14,7 @@ connectDB();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5176', 'https://your-frontend-domain.com'], 
+  origin: ['http://localhost:5176', 'https://careercompass-58en.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));

@@ -151,14 +151,12 @@ authRouter.post(
 
       let profilePicture = null;
       if (req.file) {
-        profilePicture = req.file.buffer.toString('base64'); // Convert image to Base64
+        profilePicture = req.file.buffer.toString('base64');
       }
 
-      // Check if the mentor profile already exists
       let mentor = await Mentor.findOne({ user: userId });
 
       if (mentor) {
-        // Update existing mentor profile
         mentor.expertise = expertise;
         mentor.educationalQualifications = educationalQualifications;
         mentor.jobTitle = jobTitle;
@@ -178,7 +176,6 @@ authRouter.post(
           profilePicture,
         });
 
-        // Link mentor profile to user
         user.mentorProfile = mentor._id;
         await user.save();
       }
