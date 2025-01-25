@@ -1,20 +1,17 @@
-
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phone: { type: Number, required: true, unique: true },
-  role: {
-    type: String,
-    enum: ['student', 'mentor', 'admin'],
-    default: 'student',
-    required: true,
+const UserSchema = new mongoose.Schema(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['student', 'mentor'], required: true },
+    profilePicture: { type: String }, // Stores Base64-encoded image or a URL
+    mentorProfile: { type: mongoose.Schema.Types.ObjectId, ref: 'Mentor' }, // Reference to Mentor schema
   },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-const User = mongoose.model('User', userSchema);
-
-export default User;
+export default mongoose.model('User', UserSchema);

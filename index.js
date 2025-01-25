@@ -14,7 +14,7 @@ connectDB();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5176', 'https://your-frontend-domain.com'], // Replace with allowed origins
+  origin: ['http://localhost:5176', 'https://your-frontend-domain.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
