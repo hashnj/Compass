@@ -2,19 +2,19 @@ import express from 'express';
 import multer from 'multer';
 import { body, validationResult } from 'express-validator';
 import Media from '../model/media.js';
-import auth from '../middlewares/auth.js';
 
 const mediaRouter = express.Router();
 
+// Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, 
+  limits: { fileSize: 600 * 1024 * 1024 }, 
 });
 
+// POST /media/upload endpoint
 mediaRouter.post(
   '/upload',
-  auth,
   upload.fields([
     { name: 'video', maxCount: 1 },
     { name: 'displayImage', maxCount: 1 },
@@ -25,38 +25,42 @@ mediaRouter.post(
   ],
   async (req, res) => {
     try {
+      // Validate request body
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { title, description } = req.body;
-
+      // Check if video file is provided
       if (!req.files || !req.files.video) {
         return res.status(400).json({ message: 'Video file is required.' });
       }
 
+      const { title, description } = req.body;
       const videoFile = req.files.video[0];
-      let displayImage = null;
 
+      // Convert video data to base64 (not recommended for large files)
       const videoData = videoFile.buffer.toString('base64');
 
+      // Optional display image
+      let displayImage = null;
       if (req.files.displayImage) {
         displayImage = req.files.displayImage[0].buffer.toString('base64');
       }
 
+      // Save media to the database
       const media = await Media.create({
         title,
         description,
         videoData,
         displayImage,
-        uploadedBy: req.user.id, 
+        uploadedBy: req.user?.id || 'anonymous', // Handle optional auth
       });
 
       res.status(201).json({ message: 'Media uploaded successfully.', media });
     } catch (error) {
       console.error('Error uploading media:', error);
-      res.status(500).json({ message: 'Internal server error.' });
+      res.status(500).json({ message: 'Internal server error.', error });
     }
   }
 );
