@@ -144,6 +144,7 @@ authRouter.post(
 
       const { expertise, educationalQualifications, jobTitle, experience, bio } = req.body;
       const userId = req.cookies.id;
+      console.log(userId);
 
       const user = await User.findById(userId);
       if (!user) {
