@@ -4,9 +4,9 @@ import Resume from "../model/resume.js";
 import { calculateMatchRate } from "../utils/matchRateCalculator.js";
 import auth from "../middlewares/auth.js";
 
-const router = express.Router();
+const jobRouter = express.Router();
 
-router.get("/", auth, async (req, res) => {
+jobRouter.get("/", auth, async (req, res) => {
   try {
     const jobs = await JobDescription.find();
     res.status(200).json(jobs);
@@ -16,7 +16,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/recommendations", auth, async (req, res) => {
+jobRouter.get("/recommendations", auth, async (req, res) => {
   try {
     const userResumes = await Resume.find({ userId: req.user_id });
     const userSkills = userResumes.flatMap((resume) => resume.skills);
@@ -39,7 +39,7 @@ router.get("/recommendations", auth, async (req, res) => {
   }
 });
 
-router.get("/skill-gap", auth, async (req, res) => {
+jobRouter.get("/skill-gap", auth, async (req, res) => {
   try {
     const userResumes = await Resume.find({ userId: req.user_id });
     const userSkills = userResumes.flatMap((resume) => resume.skills);
@@ -59,4 +59,4 @@ router.get("/skill-gap", auth, async (req, res) => {
   }
 });
 
-export default router;
+export default jobRouter;

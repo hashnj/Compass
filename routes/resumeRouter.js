@@ -6,10 +6,10 @@ import { parsePDF } from "../utils/pdfParser.js";
 import { extractSkillsFromText } from "../utils/skillExtractor.js";
 import auth from "../middlewares/auth.js";
 
-const router = express.Router();
+const resumeRouter = express.Router();
 const upload = multer({ dest: "uploads/" });
 
-router.post("/upload", auth, upload.single("resume"), async (req, res) => {
+resumeRouter.post("/upload", auth, upload.single("resume"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
@@ -29,7 +29,7 @@ router.post("/upload", auth, upload.single("resume"), async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
+resumeRouter.get("/", auth, async (req, res) => {
   try {
     const resumes = await Resume.find({ userId: req.user_id });
     res.status(200).json(resumes);
@@ -39,7 +39,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.delete("/:id", auth, async (req, res) => {
+resumeRouter.delete("/:id", auth, async (req, res) => {
   try {
     const resume = await Resume.findOneAndDelete({
       _id: req.params.id,
@@ -54,4 +54,4 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-export default router;
+export default resumeRouter;

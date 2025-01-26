@@ -3,14 +3,12 @@ import Resume from '../models/Resume.js';
 import JobDescription from '../models/JobDescription.js';
 import auth from '../middlewares/auth.js';
 
-const router = express.Router();
+const dashboardRouter = express.Router();
 
-router.get('/', auth, async (req, res) => {
+dashboardRouter.get('/', auth, async (req, res) => {
   try {
-    // Count user resumes
     const resumeCount = await Resume.countDocuments({ userId: req.user_id });
 
-    // Calculate job matches
     const userResumes = await Resume.find({ userId: req.user_id });
     const userSkills = userResumes.flatMap(resume => resume.skills);
 
@@ -31,4 +29,4 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-export default router;
+export default dashboardRouter;
