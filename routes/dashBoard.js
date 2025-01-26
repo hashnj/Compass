@@ -1,6 +1,6 @@
 import express from 'express';
-import Resume from '../models/Resume.js';
-import JobDescription from '../models/JobDescription.js';
+import Resume from '../model/resume.js';
+import JobDescription from '../model/jobDescription.js';
 import auth from '../middlewares/auth.js';
 
 const dashboardRouter = express.Router();
