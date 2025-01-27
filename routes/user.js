@@ -104,7 +104,7 @@ authRouter.post('/', auth ,async(req,res) => {
   const userId= req.user_id;
   const user  = await User.findById(userId);
   if(user){
-    console.log(user,'authCheck');
+    // console.log(user,'authCheck');
   res.status(200).json({
     firstname:user.firstName,
     lastname:user.lastName,
@@ -152,14 +152,32 @@ authRouter.post(
         bio,
       } = req.body;
 
-      // Check for profile picture and convert to base64 if available
+      console.log('Request Body:', req.body);
+      console.log('Uploaded File:', req.file);
+
+      // Check if mentor already exists
+      const existingMentor = await Mentor.findOne({ email });
+      if (existingMentor) {
+        return res.status(400).json({ message: 'Mentor with this email already exists.' });
+      }
+
+      // Retrieve the user by email
+      const user = await User.findOne({ email });
+
+      // If the user doesn't exist
+      if (!user) {
+        return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Process profile picture if uploaded
       let profilePicture = null;
       if (req.file) {
         profilePicture = req.file.buffer.toString('base64');
       }
 
-      // Create the mentor entry directly
+      // Create the mentor profile
       const mentor = await Mentor.create({
+        userId: user._id, // Reference to the User document
         email,
         expertise,
         educationalQualifications,
@@ -171,11 +189,26 @@ authRouter.post(
 
       res.status(200).json({ message: 'Mentor profile created successfully.', mentor });
     } catch (error) {
-      console.error('Error creating mentor profile:', error);
-      res.status(500).json({ message: 'Internal server error.', error });
+      console.error('Error stack:', error.stack);
+      res.status(500).json({ message: 'Internal server error.', error: error.message });
     }
   }
 );
+
+
+
+
+authRouter.get('/mentors', async (req, res) => {
+  try {
+    const mentors = await Mentor.find()
+      .populate('userId', 'firstName lastName profilePicture') // This should work
+      .exec();
+    res.status(200).json(mentors);
+  } catch (error) {
+    console.error("Error fetching mentors:", error);
+    res.status(500).json({ error: "Failed to fetch mentors" });
+  }
+});
 
 
 

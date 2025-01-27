@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 
 const mentorSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   email: { type: String, required: true, unique: true },
   expertise: { type: String, required: true },
   educationalQualifications: { type: String, required: true },
