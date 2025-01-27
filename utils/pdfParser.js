@@ -1,20 +1,28 @@
 import fs from 'fs';
-import pdf from 'pdf-parse';
+import { PDFDocument } from 'pdf-lib';
 
 export async function parsePDF(filePath) {
   try {
+    // Read the PDF file into a buffer
     const dataBuffer = fs.readFileSync(filePath);
 
-    const data = await pdf(dataBuffer);
-    // console.log(data); 
+    // Load the PDF document
+    const pdfDoc = await PDFDocument.load(dataBuffer);
 
-    if (!data.text) {
-      throw new Error("No text content found in the PDF.");
+    // Extract text from all pages
+    let extractedText = '';
+    const pages = pdfDoc.getPages();
+    for (const page of pages) {
+      extractedText += page.getTextContent();
     }
 
-    return data.text.toLowerCase();
+    if (!extractedText) {
+      throw new Error('No text content found in the PDF.');
+    }
+
+    return extractedText.toLowerCase();
   } catch (error) {
-    console.error("Error parsing PDF:", error.message);
-    throw error; 
+    console.error('Error parsing PDF:', error.message);
+    throw error;
   }
 }
