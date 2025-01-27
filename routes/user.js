@@ -121,7 +121,11 @@ authRouter.post('/logout', auth, tryCatch(async (req, res) => {
 
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 600 * 1024 * 1024 }, 
+});
 
 authRouter.post(
   '/mentor',
@@ -152,32 +156,26 @@ authRouter.post(
         bio,
       } = req.body;
 
-      console.log('Request Body:', req.body);
-      console.log('Uploaded File:', req.file);
-
-      // Check if mentor already exists
       const existingMentor = await Mentor.findOne({ email });
       if (existingMentor) {
         return res.status(400).json({ message: 'Mentor with this email already exists.' });
       }
 
-      // Retrieve the user by email
-      const user = await User.findOne({ email });
-
-      // If the user doesn't exist
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-      }
-
-      // Process profile picture if uploaded
       let profilePicture = null;
       if (req.file) {
         profilePicture = req.file.buffer.toString('base64');
       }
 
-      // Create the mentor profile
+      // Check if the user exists in the User collection
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ message: 'No user found with this email.' });
+      }
+      console.log(user._id);
+
+      // Create mentor profile with the userId from the User document
       const mentor = await Mentor.create({
-        userId: user._id, // Reference to the User document
+        userId: user._id, // Ensure valid reference to the User document
         email,
         expertise,
         educationalQualifications,

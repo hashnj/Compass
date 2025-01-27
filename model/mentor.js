@@ -9,7 +9,7 @@ const mentorSchema = new mongoose.Schema({
   jobTitle: { type: String, required: true },
   experience: { type: String, required: true, enum: ['0-3 years', '3-10 years', '10+ years'] },
   bio: { type: String, required: true, maxlength: 500 },
-  profilePicture: { type: String }, // Store as base64 string
+  profilePicture: { type: String }, 
 });
 
 export default mongoose.model('Mentor', mentorSchema);

@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import resumeRouter from './routes/resumeRouter.js';
 import jobRouter from './routes/jobRouter.js';
 import dashboardRouter from './routes/dashBoard.js';
+import media from './model/media.js';
+import mediaRouter from './routes/media.js';
 
 dotenv.config();
 
@@ -26,6 +28,7 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/resumes', resumeRouter);
 app.use('/jobs', jobRouter);
+app.use('/media', mediaRouter);
 app.use('/dashboard', dashboardRouter);
 
 
